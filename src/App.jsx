@@ -37,7 +37,7 @@ const ScrambleGame = () => {
     'lychee',
   ];
 
-  const maxStrikes = 10;
+  const maxStrikes = 4;
 
   const shuffledArray = shuffle(wordsArray);
 
