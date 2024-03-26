@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css'; // Import the CSS file where you have your styles
 
-// Shuffle function
 function shuffle(src) {
   const copy = [...src];
 
@@ -22,29 +20,28 @@ function shuffle(src) {
   return copy;
 }
 
-// Main component
 const ScrambleGame = () => {
-  const wordsArray = [
-    'mango',
-    'plum',
-    'apricot',
-    'pomegranate',
-    'dragonfruit',
-    'raspberry',
-    'blackberry',
-    'cantaloupe',
-    'guava',
-    'lychee',
+  const words = [
+    'apple',
+    'banana',
+    'orange',
+    'strawberry',
+    'grape',
+    'watermelon',
+    'pineapple',
+    'blueberry',
+    'peach',
+    'kiwi',
   ];
 
-  const maxStrikes = 4;
+  const maxStrikes = 10;
 
-  const shuffledArray = shuffle(wordsArray);
+  const shuffled = shuffle(words);
 
-  const [gameState, setGameState] = useState({
-    words: shuffledArray,
-    currentWordIndex: 0,
-    currentWord: shuffle(shuffledArray[0]),
+  const [gamecur, setGameState] = useState({
+    words: shuffled,
+    curwrdIndex: 0,
+    currentWord: shuffle(shuffled[0]),
     points: 0,
     strikes: 0,
     passes: 3,
@@ -59,25 +56,25 @@ const ScrambleGame = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('scrambleGameState', JSON.stringify(gameState));
-  }, [gameState]);
+    localStorage.setItem('scrambleGameState', JSON.stringify(gamecur));
+  }, [gamecur]);
 
-  const handleGuess = (event) => {
+  const Guess = (event) => {
     event.preventDefault();
     const guess = event.target.elements.guess.value.toLowerCase();
-    const { currentWordIndex, points, strikes, passes, words } = gameState;
+    const { curwrdIndex, points, strikes, passes, words } = gamecur;
 
-    if (guess === words[currentWordIndex]) {
+    if (guess === words[curwrdIndex]) {
       const newWords = [...words];
-      newWords.splice(currentWordIndex, 1);
+      newWords.splice(curwrdIndex, 1);
 
       setGameState((prevState) => ({
         ...prevState,
         words: newWords,
-        currentWordIndex:
-          currentWordIndex < newWords.length ? currentWordIndex : 0,
+        curwrdIndex:
+        curwrdIndex < newWords.length ? curwrdIndex : 0,
         currentWord: shuffle(
-          newWords[currentWordIndex < newWords.length ? currentWordIndex : 0]
+          newWords[curwrdIndex < newWords.length ? curwrdIndex : 0]
         ),
         points: points + 1,
       }));
@@ -95,18 +92,18 @@ const ScrambleGame = () => {
   };
 
   const handlePass = () => {
-    const { currentWordIndex, passes, words } = gameState;
+    const { curwrdIndex, passes, words } = gamecur;
     let newWords = [...words]; 
   
     if (passes > 0) {
-      newWords.splice(currentWordIndex, 1);
+      newWords.splice(curwrdIndex, 1);
       setGameState((prevState) => ({
         ...prevState,
         words: newWords,
-        currentWordIndex:
-          currentWordIndex < newWords.length ? currentWordIndex : 0,
+        curwrdIndex:
+        curwrdIndex < newWords.length ? curwrdIndex : 0,
         currentWord: shuffle(
-          newWords[currentWordIndex < newWords.length ? currentWordIndex : 0]
+          newWords[curwrdIndex < newWords.length ? curwrdIndex : 0]
         ),
         passes: passes - 1,
       }));
@@ -122,9 +119,9 @@ const ScrambleGame = () => {
 
   const handlePlayAgain = () => {
     setGameState({
-      words: shuffle(wordsArray),
-      currentWordIndex: 0,
-      currentWord: shuffle(wordsArray[0]),
+      words: shuffle(words),
+      curwrdIndex: 0,
+      currentWord: shuffle(words[0]),
       points: 0,
       strikes: 0,
       passes: 3,
@@ -132,33 +129,31 @@ const ScrambleGame = () => {
     });
   };
 
-  const { currentWord, points, strikes, passes, gameOver } = gameState;
+  const { currentWord, points, strikes, passes, gameOver } = gamecur;
 
   return (
-    <div className="container">
+    <div>
       {!gameOver && (
-        <div className="game">
-          <h1 className="title">Scramble Game</h1>
-          <div className="info">
-            <div className="points">Points: {points}</div>
-            <div className="strikes">Strikes: {strikes}</div>
-            <div className="passes">Passes: {passes}</div>
-          </div>
-          <div className="word">Current Word: {currentWord}</div>
-          <form onSubmit={handleGuess} className="form">
-            <input type='text' name='guess' className="input" />
-            <button type='submit' className="button">Guess</button>
+        <div>
+          <h1>Scramble Game</h1>
+          <div>Points: {points}</div>
+          <div>Strikes: {strikes}</div>
+          <div>Passes: {passes}</div>
+          <div>Current Word: {currentWord}</div>
+          <form onSubmit={Guess}>
+            <input type='text' name='guess' />
+            <button type='submit'>Guess</button>
           </form>
-          <button onClick={handlePass} disabled={passes === 0} className="pass-button">
+          <button onClick={handlePass} disabled={passes === 0}>
             Pass
           </button>
         </div>
       )}
       {gameOver && (
-        <div className="game-over">
-          <h1 className="game-over-title">Game Over!</h1>
-          <div className="total-points">Total Points: {points}</div>
-          <button onClick={handlePlayAgain} className="play-again-button">Play Again</button>
+        <div>
+          <h1>Game Over!</h1>
+          <div>Total Points: {points}</div>
+          <button onClick={handlePlayAgain}>Play Again</button>
         </div>
       )}
     </div>
