@@ -32,6 +32,7 @@ const ScrambleGame = () => {
     'blueberry',
     'peach',
     'kiwi',
+    'blueberry',
   ];
 
   const maxStrikes = 10;
